@@ -5,6 +5,7 @@ $(document).ready(function() {
 	initializePage();
 })
 
+
 /*
  * Function that is called when the document is ready.
  */
@@ -17,6 +18,10 @@ function initializePage() {
 /*
  * Make an AJAX call to retrieve project details and add it in
  */
+
+
+
+
 function addProjectDetails(e) {
 	// Prevent following the link
 	e.preventDefault();
@@ -27,6 +32,25 @@ function addProjectDetails(e) {
 	var idNumber = projectID.substr('project'.length);
 
 	console.log("User clicked on project " + idNumber);
+
+	var url = "/project/" + idNumber;
+	$.get(url, addProject);
+	console.log(url);
+}
+
+
+function addProject(result) {
+	console.log(result);
+	var idNumber = result.id;
+	var selector = "div#project" + idNumber + "div.details";
+	var projectHTML = 
+	'<img src= "' + result['image'] + '"class= detailsImage"' +
+	'<h2>' + result['title'] + '</h2>' +
+	'<p><small>' + result['date'] + '</small></p>' +
+	'<p>' +result["summary"] + '</p>';
+
+	$(selector).html(projectHTML);
+
 }
 
 /*
@@ -35,4 +59,16 @@ function addProjectDetails(e) {
  */
 function randomizeColors(e) {
 	console.log("User clicked on color button");
+	$.get("/palette", applyPalette);
+}
+
+function applyPalette(result) {
+	console.log(result);
+	var colors = result.colors.hex;
+
+	$('body').css('background-color', colors[0]);
+	$('.thumbnail').css('background-color', colors[1]);
+	$('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+	$('p').css('color', colors[3]);
+	$('.project img').css('opacity', .75);
 }
